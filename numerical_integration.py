@@ -69,17 +69,16 @@ def midpoint(dt, gen_graph=False):
     def ay(vz):
         return (c.q * c.E - c.q * c.B * vz) / c.m
 
-
     for i in range(1, num_of_time_intervals):
-        k1rz = vz[i-1] * dt
-        k1ry = vy[i-1] * dt
-        k2rz = k1rz  # TODO
-        k2ry = k1ry  # TODO
-
         k1vz = az(vy[i-1]) * dt
         k1vy = ay(vz[i - 1]) * dt
         k2vz = az(vy[i-1] + 0.5 * k1vy) * dt
         k2vy = ay(vz[i - 1] + 0.5 * k1vz) * dt
+
+        k1rz = vz[i - 1] * dt
+        k1ry = vy[i - 1] * dt
+        k2rz = (vz[i-1] + 0.5 * k1rz) * dt  # TODO
+        k2ry = (vy[i-1] + 0.5 * k1ry) * dt  # TODO
 
         rz[i] = rz[i-1] + k2rz
         ry[i] = ry[i - 1] + k2ry
@@ -127,15 +126,6 @@ def runge_kutta(dt, gen_graph=False):
 
 
     for i in range(1, num_of_time_intervals):
-        k1rz = vz[i-1] * dt
-        k1ry = vy[i-1] * dt
-        k2rz = k1rz
-        k2ry = k1ry
-        k3rz = k2rz
-        k3ry = k2ry
-        k4rz = k3rz
-        k4ry = k3ry
-
         k1vz = az(vy[i-1]) * dt
         k1vy = ay(vz[i - 1]) * dt
         k2vz = az(vy[i-1] + 0.5 * k1vy) * dt
@@ -144,6 +134,15 @@ def runge_kutta(dt, gen_graph=False):
         k3vy = ay(vz[i - 1] + 0.5 * k2vz) * dt
         k4vz = az(vy[i - 1] + k3vy) * dt
         k4vy = ay(vz[i - 1] + k3vz) * dt
+
+        k1rz = vz[i - 1] * dt
+        k1ry = vy[i - 1] * dt
+        k2rz = (vz[i - 1] + 0.5 * k1rz) * dt
+        k2ry = (vy[i - 1] + 0.5 * k1ry) * dt
+        k3rz = (vz[i - 1] + 0.5 * k2rz) * dt
+        k3ry = (vy[i - 1] + 0.5 * k2ry) * dt
+        k4rz = (vz[i - 1] + k3rz) * dt
+        k4ry = (vy[i - 1] + k3ry) * dt
 
         rz[i] = rz[i-1] + (k1rz + 2 * k2rz + 2 * k3rz + k4rz) / 6
         ry[i] = ry[i - 1] + (k1ry + 2 * k2ry + 2 * k3ry + k4ry) / 6
@@ -212,3 +211,4 @@ def plot_error_graph(num_of_intervals, step):
 
 if __name__ == "__main__":
     plot_error_graph(100, 0.001)
+    # TODO change k's for other methods
