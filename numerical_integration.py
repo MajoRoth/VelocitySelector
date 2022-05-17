@@ -77,8 +77,8 @@ def midpoint(dt, gen_graph=False):
 
         k1rz = vz[i - 1] * dt
         k1ry = vy[i - 1] * dt
-        k2rz = (vz[i-1] + 0.5 * k1rz) * dt  # TODO
-        k2ry = (vy[i-1] + 0.5 * k1ry) * dt  # TODO
+        k2rz = (vz[i-1] + 0.5 * k1rz) * dt
+        k2ry = (vy[i-1] + 0.5 * k1ry) * dt
 
         rz[i] = rz[i-1] + k2rz
         ry[i] = ry[i - 1] + k2ry
@@ -189,17 +189,14 @@ def plot_error_graph(num_of_intervals, step):
     print(runge)
 
     plt.rcParams['text.usetex'] = True
-
     plt.plot(times, taylor, label="taylor")
     plt.plot(times, mid, label="midpoint")
     plt.plot(times, runge, label="runge-kutta")
 
     plt.ylabel("error")
     plt.xlabel("dt")
-
     plt.xscale("log")
     plt.yscale("log")
-
     plt.title("log log - error for dt")
 
     plt.grid(True)
@@ -211,4 +208,3 @@ def plot_error_graph(num_of_intervals, step):
 
 if __name__ == "__main__":
     plot_error_graph(100, 0.001)
-    # TODO change k's for other methods
