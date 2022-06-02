@@ -2,6 +2,7 @@ import math
 import numpy as np
 import matplotlib.pyplot as plt
 
+import constants
 import constants as c
 
 
@@ -21,6 +22,7 @@ def runge_kutta_passes_filter(dt, E_0, y_0, gen_graph=False):
     vy[0] = 0
 
     def az(vy):
+        print(vy)
         return (c.q * vy * c.B) / c.m
 
     def ay(vz):
@@ -41,12 +43,12 @@ def runge_kutta_passes_filter(dt, E_0, y_0, gen_graph=False):
 
         k1rz = vz[i - 1] * dt
         k1ry = vy[i - 1] * dt
-        k2rz = (vz[i - 1] + 0.5 * k1rz) * dt
-        k2ry = (vy[i - 1] + 0.5 * k1ry) * dt
-        k3rz = (vz[i - 1] + 0.5 * k2rz) * dt
-        k3ry = (vy[i - 1] + 0.5 * k2ry) * dt
-        k4rz = (vz[i - 1] + k3rz) * dt
-        k4ry = (vy[i - 1] + k3ry) * dt
+        k2rz = (vz[i - 1] + 0.5 * k1vz) * dt
+        k2ry = (vy[i - 1] + 0.5 * k1vy) * dt
+        k3rz = (vz[i - 1] + 0.5 * k2vz) * dt
+        k3ry = (vy[i - 1] + 0.5 * k2vy) * dt
+        k4rz = (vz[i - 1] + k3vz) * dt
+        k4ry = (vy[i - 1] + k3vy) * dt
 
         rz = np.append(rz, [rz[i - 1] + (k1rz + 2 * k2rz + 2 * k3rz + k4rz) / 6])
         ry = np.append(ry, ry[i - 1] + (k1ry + 2 * k2ry + 2 * k3ry + k4ry) / 6)
@@ -125,6 +127,8 @@ def velocity_distribution(num_of_particles):
 if __name__ == "__main__":
     # error_plane()
     # velocity_distribution(10**5)
-    energy = np.linspace(c.E_0 - c.delta_E, c.E_0 + c.delta_E, num=math.ceil(math.sqrt(100)))
-    radius = np.linspace(-c.R, c.R, num=math.ceil(math.sqrt(100)))
-    print(runge_kutta_passes_filter(10**(-10), energy[5], radius[5], gen_graph=True))
+    energy = np.linspace(c.E_0 - c.delta_E, c.E_0 + c.delta_E, num=math.ceil(100))
+    radius = np.linspace(-c.R, c.R, num=math.ceil(100))
+    # print(runge_kutta_passes_filter(10**(-10), energy[5], radius[5], gen_graph=True))
+
+    velocity_distribution(10000)

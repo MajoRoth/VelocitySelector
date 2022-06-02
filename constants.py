@@ -9,4 +9,18 @@ B = 1
 E = math.sqrt((2*E_0)/m)*B  # [N/C]
 R = 0.003  # [m]
 
+
+
+#
+# E_0 = 1
+# delta_E = 1
+#
+# m = 1
+# q = 1
+# B = 1
+# E = 1
+# R = 1
+
+
 analytic = (0, (2 * m * E * math.pi) / (q * B * B))
+

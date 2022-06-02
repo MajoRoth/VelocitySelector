@@ -41,8 +41,9 @@ def taylor_first_order(dt, gen_graph=False):
         axis[1].plot(vy, vz)
         axis[1].set_title(r"$(v_y, v_z)$")
 
+        axis[0].grid(True)
+        axis[1].grid(True)
         plt.savefig('taylor_first_order.png')
-        plt.grid(True)
         plt.show()
 
     return ry[num_of_time_intervals-1], rz[num_of_time_intervals-1]
@@ -75,10 +76,10 @@ def midpoint(dt, gen_graph=False):
         k2vz = az(vy[i-1] + 0.5 * k1vy) * dt
         k2vy = ay(vz[i - 1] + 0.5 * k1vz) * dt
 
-        k1rz = vz[i - 1] * dt
-        k1ry = vy[i - 1] * dt
-        k2rz = (vz[i-1] + 0.5 * k1rz) * dt
-        k2ry = (vy[i-1] + 0.5 * k1ry) * dt
+        # k1rz = vz[i - 1] * dt
+        # k1ry = vy[i - 1] * dt
+        k2rz = (vz[i-1] + 0.5 * k1vz) * dt
+        k2ry = (vy[i-1] + 0.5 * k1vy) * dt
 
         rz[i] = rz[i-1] + k2rz
         ry[i] = ry[i - 1] + k2ry
@@ -96,8 +97,9 @@ def midpoint(dt, gen_graph=False):
         axis[1].plot(vy, vz)
         axis[1].set_title(r"$(v_y, v_z)$")
 
+        axis[0].grid(True)
+        axis[1].grid(True)
         plt.savefig('midpoint.png')
-        plt.grid(True)
         plt.show()
 
     return ry[num_of_time_intervals-1], rz[num_of_time_intervals-1]
@@ -106,7 +108,7 @@ def midpoint(dt, gen_graph=False):
 def runge_kutta(dt, gen_graph=False):
     omega = (c.q * c.B) / c.m
     T = (2 * math.pi) / omega
-    num_of_time_intervals = math.ceil(T / dt)
+    num_of_time_intervals = math.ceil(T / dt) + 1
 
     rz = np.zeros(num_of_time_intervals)
     ry = np.zeros(num_of_time_intervals)
@@ -137,14 +139,14 @@ def runge_kutta(dt, gen_graph=False):
 
         k1rz = vz[i - 1] * dt
         k1ry = vy[i - 1] * dt
-        k2rz = (vz[i - 1] + 0.5 * k1rz) * dt
-        k2ry = (vy[i - 1] + 0.5 * k1ry) * dt
-        k3rz = (vz[i - 1] + 0.5 * k2rz) * dt
-        k3ry = (vy[i - 1] + 0.5 * k2ry) * dt
-        k4rz = (vz[i - 1] + k3rz) * dt
-        k4ry = (vy[i - 1] + k3ry) * dt
+        k2rz = (vz[i - 1] + 0.5 * k1vz) * dt
+        k2ry = (vy[i - 1] + 0.5 * k1vy) * dt
+        k3rz = (vz[i - 1] + 0.5 * k2vz) * dt
+        k3ry = (vy[i - 1] + 0.5 * k2vy) * dt
+        k4rz = (vz[i - 1] + k3vz) * dt
+        k4ry = (vy[i - 1] + k3vy) * dt
 
-        rz[i] = rz[i-1] + (k1rz + 2 * k2rz + 2 * k3rz + k4rz) / 6
+        rz[i] = rz[i - 1] + (k1rz + 2 * k2rz + 2 * k3rz + k4rz) / 6
         ry[i] = ry[i - 1] + (k1ry + 2 * k2ry + 2 * k3ry + k4ry) / 6
         vz[i] = vz[i - 1] + (k1vz + 2 * k2vz + 2 * k3vz + k4vz) / 6
         vy[i] = vy[i - 1] + (k1vy + 2 * k2vy + 2 * k3vy + k4vy) / 6
@@ -160,9 +162,13 @@ def runge_kutta(dt, gen_graph=False):
         axis[1].plot(vy, vz)
         axis[1].set_title(r"$(v_y, v_z)$")
 
+        axis[0].grid(True)
+        axis[1].grid(True)
         plt.savefig('runge_kutta.png')
-        plt.grid(True)
         plt.show()
+
+    if abs(ry[num_of_time_intervals-1]) > abs(ry[num_of_time_intervals-2]):
+        return ry[num_of_time_intervals-2], rz[num_of_time_intervals-2]
 
     return ry[num_of_time_intervals-1], rz[num_of_time_intervals-1]
 
@@ -207,5 +213,8 @@ def plot_error_graph(num_of_intervals, step):
 
 
 if __name__ == "__main__":
-    plot_error_graph(100, 0.001)
-    # midpoint(0.01, True)
+    dt = 0.01
+    plot_error_graph(100, 0.0001)
+    # taylor_first_order(dt, True)
+    # midpoint(dt, True)
+    # runge_kutta(dt, True)
