@@ -123,5 +123,8 @@ def velocity_distribution(num_of_particles):
 
 
 if __name__ == "__main__":
-    error_plane()
-    velocity_distribution(10**5)
+    # error_plane()
+    # velocity_distribution(10**5)
+    energy = np.linspace(c.E_0 - c.delta_E, c.E_0 + c.delta_E, num=math.ceil(math.sqrt(100)))
+    radius = np.linspace(-c.R, c.R, num=math.ceil(math.sqrt(100)))
+    print(runge_kutta_passes_filter(10**(-10), energy[5], radius[5], gen_graph=True))

@@ -208,3 +208,4 @@ def plot_error_graph(num_of_intervals, step):
 
 if __name__ == "__main__":
     plot_error_graph(100, 0.001)
+    # midpoint(0.01, True)
