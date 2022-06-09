@@ -5,26 +5,26 @@ import matplotlib.pyplot as plt
 import constants as c
 
 
-def taylor_first_order(dt, gen_graph=False):
+def taylor_first_order(num_of_time_intervals, gen_graph=False):
     """
         r(t+dt) = r(t) + v(t)dt
         v(t+dt) = v(t) + a(t)dt
     """
     omega = (c.q * c.B) / c.m
     T = (2 * math.pi) / omega
-    num_of_time_intervals = math.ceil(T / dt)
+    dt = T / num_of_time_intervals
 
-    rz = np.zeros(num_of_time_intervals)
-    ry = np.zeros(num_of_time_intervals)
-    vz = np.zeros(num_of_time_intervals)
-    vy = np.zeros(num_of_time_intervals)
+    rz = np.zeros(num_of_time_intervals+1)
+    ry = np.zeros(num_of_time_intervals+1)
+    vz = np.zeros(num_of_time_intervals+1)
+    vy = np.zeros(num_of_time_intervals+1)
 
     rz[0] = 0
     ry[0] = 0
     vz[0] = (3 * c.E) / c.B
     vy[0] = 0
 
-    for i in range(1, num_of_time_intervals):
+    for i in range(1, num_of_time_intervals+1):
         rz[i] = rz[i-1] + vz[i-1] * dt
         ry[i] = ry[i - 1] + vy[i - 1] * dt
         vz[i] = vz[i - 1] + ((c.q * c.B * vy[i-1]) / c.m) * dt
@@ -46,18 +46,18 @@ def taylor_first_order(dt, gen_graph=False):
         plt.savefig('taylor_first_order.png')
         plt.show()
 
-    return ry[num_of_time_intervals-1], rz[num_of_time_intervals-1]
+    return ry[num_of_time_intervals], rz[num_of_time_intervals]
 
 
-def midpoint(dt, gen_graph=False):
+def midpoint(num_of_time_intervals, gen_graph=False):
     omega = (c.q * c.B) / c.m
     T = (2 * math.pi) / omega
-    num_of_time_intervals = math.ceil(T / dt)
+    dt = T / num_of_time_intervals
 
-    rz = np.zeros(num_of_time_intervals)
-    ry = np.zeros(num_of_time_intervals)
-    vz = np.zeros(num_of_time_intervals)
-    vy = np.zeros(num_of_time_intervals)
+    rz = np.zeros(num_of_time_intervals+1)
+    ry = np.zeros(num_of_time_intervals+1)
+    vz = np.zeros(num_of_time_intervals+1)
+    vy = np.zeros(num_of_time_intervals+1)
 
     rz[0] = 0
     ry[0] = 0
@@ -70,7 +70,7 @@ def midpoint(dt, gen_graph=False):
     def ay(vz):
         return (c.q * c.E - c.q * c.B * vz) / c.m
 
-    for i in range(1, num_of_time_intervals):
+    for i in range(1, num_of_time_intervals+1):
         k1vz = az(vy[i-1]) * dt
         k1vy = ay(vz[i - 1]) * dt
         k2vz = az(vy[i-1] + 0.5 * k1vy) * dt
@@ -102,18 +102,18 @@ def midpoint(dt, gen_graph=False):
         plt.savefig('midpoint.png')
         plt.show()
 
-    return ry[num_of_time_intervals-1], rz[num_of_time_intervals-1]
+    return ry[num_of_time_intervals], rz[num_of_time_intervals]
 
 
-def runge_kutta(dt, gen_graph=False):
+def runge_kutta(num_of_time_intervals, gen_graph=False):
     omega = (c.q * c.B) / c.m
     T = (2 * math.pi) / omega
-    num_of_time_intervals = math.ceil(T / dt) + 1
+    dt = T / num_of_time_intervals
 
-    rz = np.zeros(num_of_time_intervals)
-    ry = np.zeros(num_of_time_intervals)
-    vz = np.zeros(num_of_time_intervals)
-    vy = np.zeros(num_of_time_intervals)
+    rz = np.zeros(num_of_time_intervals+1)
+    ry = np.zeros(num_of_time_intervals+1)
+    vz = np.zeros(num_of_time_intervals+1)
+    vy = np.zeros(num_of_time_intervals+1)
 
     rz[0] = 0
     ry[0] = 0
@@ -127,7 +127,7 @@ def runge_kutta(dt, gen_graph=False):
         return (c.q * c.E - c.q * c.B * vz) / c.m
 
 
-    for i in range(1, num_of_time_intervals):
+    for i in range(1, num_of_time_intervals+1):
         k1vz = az(vy[i-1]) * dt
         k1vy = ay(vz[i - 1]) * dt
         k2vz = az(vy[i-1] + 0.5 * k1vy) * dt
@@ -167,27 +167,29 @@ def runge_kutta(dt, gen_graph=False):
         plt.savefig('runge_kutta.png')
         plt.show()
 
-    if abs(ry[num_of_time_intervals-1]) > abs(ry[num_of_time_intervals-2]):
-        return ry[num_of_time_intervals-2], rz[num_of_time_intervals-2]
-
-    return ry[num_of_time_intervals-1], rz[num_of_time_intervals-1]
+    return ry[num_of_time_intervals], rz[num_of_time_intervals]
 
 
 def error(numeric, analytic):
     return (numeric[0] - analytic[0])**2 + (numeric[1] - analytic[1])**2
 
 
-def plot_error_graph(num_of_intervals, step):
-    times = np.zeros(num_of_intervals)
-    taylor = np.zeros(num_of_intervals)
-    mid = np.zeros(num_of_intervals)
-    runge = np.zeros(num_of_intervals)
+def plot_error_graph():
+    omega = (c.q * c.B) / c.m
+    T = (2 * math.pi) / omega
+    times = np.zeros(101) # N number of samples,
+    taylor = np.zeros(101)
+    mid = np.zeros(101)
+    runge = np.zeros(101)
+    i=0
+    for n in np.linspace(100, 10000, 100):
+        print(n)
 
-    for i in range(num_of_intervals):
-        times[i] = (i+1)*step
-        taylor[i] = error(taylor_first_order(times[i]), c.analytic)
-        mid[i] = error(midpoint(times[i]), c.analytic)
-        runge[i] = error(runge_kutta(times[i]), c.analytic)
+        times[i] = T/n
+        taylor[i] = error(taylor_first_order(int(n)), c.analytic)
+        mid[i] = error(midpoint(int(n)), c.analytic)
+        runge[i] = error(runge_kutta(int(n)), c.analytic)
+        i += 1
 
     print(times)
     print(taylor)
@@ -214,7 +216,4 @@ def plot_error_graph(num_of_intervals, step):
 
 if __name__ == "__main__":
     dt = 0.01
-    plot_error_graph(100, 0.0001)
-    # taylor_first_order(dt, True)
-    # midpoint(dt, True)
-    # runge_kutta(dt, True)
+    plot_error_graph()

@@ -22,7 +22,6 @@ def runge_kutta_passes_filter(dt, E_0, y_0, gen_graph=False):
     vy[0] = 0
 
     def az(vy):
-        print(vy)
         return (c.q * vy * c.B) / c.m
 
     def ay(vz):
@@ -74,6 +73,7 @@ def runge_kutta_passes_filter(dt, E_0, y_0, gen_graph=False):
         plt.savefig('runge_kutta_wien_filter.png')
         plt.show()
 
+    print(rz[i-1], rz[i])
     return -c.R < ry[i] < c.R, vz[-1]
 
 
@@ -108,13 +108,12 @@ def velocity_distribution(num_of_particles):
     for e in energy:
         for r in radius:
             i+=1
-            passes, vel = runge_kutta_passes_filter(10 ** (-9), e, r)
+            passes, vel = runge_kutta_passes_filter(10 ** (-10), e, r)
             if passes:
                 velocities.append(vel)
 
             print(i)
 
-    print(velocities)
     plt.hist(velocities)
     plt.rcParams['text.usetex'] = True
     plt.title(r"velocity distribution")
@@ -131,4 +130,4 @@ if __name__ == "__main__":
     radius = np.linspace(-c.R, c.R, num=math.ceil(100))
     # print(runge_kutta_passes_filter(10**(-10), energy[5], radius[5], gen_graph=True))
 
-    velocity_distribution(10000)
+    velocity_distribution(1000)
