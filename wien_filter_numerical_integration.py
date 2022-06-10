@@ -1,4 +1,6 @@
 import math
+import random
+
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -84,9 +86,12 @@ def error_plane():
     output_velocity = []
     output_radius = []
 
+    count = 0
+
     for e in energy:
         for r in radius:
             if runge_kutta_passes_filter(10**(-11), e, r,)[0]:
+                count += 1
                 output_velocity.append(math.sqrt(e/c.E_0)-1)
                 output_radius.append(r/c.R)
 
@@ -97,6 +102,7 @@ def error_plane():
     plt.grid(True)
     plt.savefig('error_plane.png')
     plt.show()
+
 
 def velocity_distribution(num_of_particles):
     energy = np.linspace(c.E_0 - c.delta_E, c.E_0 + c.delta_E, num=math.ceil(math.sqrt(num_of_particles)))
@@ -122,6 +128,33 @@ def velocity_distribution(num_of_particles):
     plt.show()
 
 
+def calculate_area():
+    output_velocity = []
+    output_radius = []
+
+    count = 0
+
+    for i in range(10**5):
+        e = c.E_0 + 2 * c.delta_E * (random.random()-0.5)
+        r = -c.R + 2 * c.R * random.random()
+        if runge_kutta_passes_filter(10 ** (-10), e, r, )[0]:
+            count += 1
+            output_velocity.append(math.sqrt(e / c.E_0) - 1)
+            output_radius.append(r / c.R)
+
+    return count/10**5
+
+
+def calculate_variance():
+    arr = list()
+    for i in range(100):
+        res = calculate_area()
+        arr.append(res)
+
+    print(np.var(arr))
+
+
+
 if __name__ == "__main__":
     # error_plane()
     # velocity_distribution(10**5)
@@ -129,4 +162,4 @@ if __name__ == "__main__":
     radius = np.linspace(-c.R, c.R, num=math.ceil(100))
     # print(runge_kutta_passes_filter(10**(-10), energy[5], radius[5], gen_graph=True))
 
-    velocity_distribution(10**4)
+    calculate_variance()
