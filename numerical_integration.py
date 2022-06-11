@@ -214,6 +214,4 @@ def plot_error_graph():
     plt.show()
 
 
-if __name__ == "__main__":
-    dt = 0.01
-    plot_error_graph()
+

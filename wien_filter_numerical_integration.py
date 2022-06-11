@@ -117,7 +117,6 @@ def velocity_distribution(num_of_particles):
             if passes:
                 velocities.append(vel)
 
-            print(i)
 
     plt.hist(velocities, bins=100)
     plt.rcParams['text.usetex'] = True
@@ -134,7 +133,7 @@ def calculate_area():
 
     count = 0
 
-    for i in range(10**5):
+    for i in range(10**4):
         e = c.E_0 + 2 * c.delta_E * (random.random()-0.5)
         r = -c.R + 2 * c.R * random.random()
         if runge_kutta_passes_filter(10 ** (-10), e, r, )[0]:
@@ -142,24 +141,16 @@ def calculate_area():
             output_velocity.append(math.sqrt(e / c.E_0) - 1)
             output_radius.append(r / c.R)
 
-    return count/10**5
+    return (count/10**4) * 100  # return pass percentage
 
 
 def calculate_variance():
     arr = list()
-    for i in range(100):
+    for i in range(25):
         res = calculate_area()
         arr.append(res)
 
-    print(np.var(arr))
+    print("The varieance is:", np.std(arr))
 
 
 
-if __name__ == "__main__":
-    # error_plane()
-    # velocity_distribution(10**5)
-    energy = np.linspace(c.E_0 - c.delta_E, c.E_0 + c.delta_E, num=math.ceil(100))
-    radius = np.linspace(-c.R, c.R, num=math.ceil(100))
-    # print(runge_kutta_passes_filter(10**(-10), energy[5], radius[5], gen_graph=True))
-
-    calculate_variance()
